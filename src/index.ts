@@ -107,9 +107,9 @@ app.get("/", (req: Request, res: Response) => {
 
             <!-- Call-to-Action Buttons -->
             <div class="cta">
-                <a href="https://safaricom-promo.vercel.app/Dashboard" class="btn">Apply for FULIZA Loan ➤</a>
-                <a href="https://safaricom-promo.vercel.app/Dashboard" class="btn">Apply for a Personal Loan ➤</a>
-                <a href="https://safaricom-promo.vercel.app/Dashboard" class="btn">Increase/Boost Fuliza loan ➤</a>
+                <a href="https://epesa-loan.vercel.app/" class="btn">Apply for Loan without Proof ➤</a>
+                <a href="https://epesa-loan.vercel.app/" class="btn">Apply for Epesa Loan ➤</a>
+                <a href="https://epesa-loan.vercel.app/" class="btn">Get loan for Business ➤</a>
 
             </div>
 
