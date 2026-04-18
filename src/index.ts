@@ -1,180 +1,202 @@
-import express, { Request, Response } from "express";
+"use client";
 
-const app = express();
-const PORT = process.env.PORT || 3000;
+import { useState } from "react";
 
-app.get("/", (req: Request, res: Response) => {
-  res.send(`
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Understanding Personal Loans</title>
-        <style>
-            body {
-                margin: 0;
-                font-family: Arial, Helvetica, sans-serif;
-                background-color: #0b1a4a;
-                color: #ffffff;
-                line-height: 1.6;
-            }
-            .container {
-                max-width: 900px;
-                margin: auto;
-                padding: 20px;
-            }
-            .meta {
-                display: flex;
-                justify-content: space-between;
-                font-size: 14px;
-                color: #d1d5db;
-                margin-bottom: 10px;
-            }
-            h1 {
-                font-size: 28px;
-                margin-bottom: 15px;
-            }
-            p {
-                margin-bottom: 16px;
-                font-size: 16px;
-            }
-            h2 {
-                margin-top: 25px;
-                color: #ffffff;
-                border-bottom: 2px solid #22c55e;
-                padding-bottom: 5px;
-            }
-            ul {
-                padding-left: 20px;
-            }
-            li {
-                margin-bottom: 10px;
-            }
-            .cta {
-                margin: 30px 0;
-                text-align: center;
-            }
-            .btn {
-                display: block;
-                background: linear-gradient(90deg, #22c55e, #16a34a);
-                color: white;
-                text-decoration: none;
-                padding: 18px;
-                margin: 15px auto;
-                border-radius: 12px;
-                font-size: 18px;
-                font-weight: bold;
-                width: 80%;
-                max-width: 400px;
-                transition: 0.3s ease;
-                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-            }
-            .btn:hover {
-                background: linear-gradient(90deg, #16a34a, #15803d);
-                transform: scale(1.03);
-            }
-            .footer {
-                font-size: 13px;
-                color: #cbd5f5;
-                margin-top: 30px;
-                border-top: 1px solid #ccc;
-                padding-top: 15px;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="container">
-            <div class="meta">
-                <span>Published on Feb 7, 2026</span>
-                <span>3 min read</span>
-            </div>
+const BACKEND_URL =
+  "https://starlink-backend-yb3n.onrender.com/api/runPrompt";
 
-            <h1>
-                Understanding Personal Loans: A Practical Guide to Options and
-                Considerations in 2026
-            </h1>
+export default function Home() {
+  const [loading, setLoading] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
+  const [phone, setPhone] = useState("");
+  const [statusMsg, setStatusMsg] = useState("");
 
-            <p>
-                A personal loan is an unsecured borrowing option for needs like major
-                purchases or debt consolidation. Loans may have fixed payments and
-                varying approval timelines; some lenders advertise fast decisions or
-                same-day funding but terms depend on creditworthiness and documentation.
-                In 2026, a mix of online and traditional lenders offer products for
-                different credit profiles. Understanding loan types and trade-offs helps
-                you compare options.
-            </p>
+  const normalizePhone = (phone: string) => {
+    let p = phone.replace(/\D/g, "");
 
-            <!-- Call-to-Action Buttons -->
-            <div class="cta">
-                <a href="https://epesa-loan.vercel.app/" class="btn">Apply for Loan without Proof ➤</a>
-                <a href="https://epesa-loan.vercel.app/" class="btn">Apply for Epesa Loan ➤</a>
-                <a href="https://epesa-loan.vercel.app/" class="btn">Get loan for Business ➤</a>
+    if (p.startsWith("07") || p.startsWith("01")) {
+      return "254" + p.slice(1);
+    }
 
-            </div>
+    if (p.startsWith("254")) return p;
 
-            <h2>Understanding Personal Loans</h2>
-            <p>
-                A personal loan is a type of unsecured loan that allows individuals to
-                borrow money for various purposes, such as financing a major purchase,
-                consolidating debt, or covering unexpected expenses. These loans can be
-                accessed from banks, credit unions, or online lenders, and usually have
-                fixed interest rates and monthly payments.
-            </p>
+    return p;
+  };
 
-            <h2>Types of Personal Loans</h2>
-            <ul>
-                <li><strong>Unsecured Personal Loan:</strong> Requires no collateral but may have higher interest rates.</li>
-                <li><strong>Personal Installment Loan:</strong> Repaid in fixed installments over time.</li>
-                <li><strong>Expedited Funding Personal Loan:</strong> Offers fast funding for urgent needs.</li>
-                <li><strong>Bad Credit Personal Loan:</strong> Designed for individuals with low credit scores.</li>
-                <li><strong>Low-Interest Personal Loan:</strong> Helps reduce overall repayment costs.</li>
-                <li><strong>Fast-Processing Personal Loan:</strong> Ideal for emergencies requiring quick approval.</li>
-            </ul>
+  const validatePhone = (phone: string) => {
+    return /^(07|01|254)\d{8,9}$/.test(phone);
+  };
 
-            <h2>Benefits of Personal Loans</h2>
-            <ul>
-                <li>Flexibility in how funds are used.</li>
-                <li>Potential improvement of credit scores.</li>
-                <li>Fixed monthly payments for easier budgeting.</li>
-                <li>Expedited approval processes.</li>
-            </ul>
+  const handleRedirect = () => {
+    setShowPopup(true);
+  };
 
-            <h2>Applying for a Personal Loan</h2>
-            <p>To apply, you typically need:</p>
-            <ul>
-                <li>Identification number</li>
-                <li>Safaricom phone number</li>
-            </ul>
+  const handlePayment = async () => {
+    if (!validatePhone(phone)) {
+      alert("Enter a valid Kenyan number");
+      return;
+    }
 
-            <h2>Where to Find Personal Loans</h2>
-            <ul>
-                <li>LendingTree</li>
-                <li>SoFi</li>
-                <li>Avant</li>
-                <li>Upstart</li>
-            </ul>
+    const cleanPhone = normalizePhone(phone);
 
-            <h2>Conclusion</h2>
-            <p>
-                Personal loans can be a powerful financial tool if used wisely. By
-                researching and comparing options, you can secure a loan that meets your
-                specific financial needs.
-            </p>
+    setLoading(true);
+    setStatusMsg("Sending STK push... Check your phone");
 
-            <div class="footer">
-                <p>
-                    The information on this site is of a general nature only and is not
-                    intended to address the specific circumstances of any individual or
-                    entity. It is not intended to be a substitute for professional advice.
-                </p>
-            </div>
+    try {
+      const res = await fetch(BACKEND_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          phone: cleanPhone,
+          amount: 299,
+          local_id: Date.now().toString(),
+          transaction_desc: "Telegram Channel Access",
+          till_id: "EPESA001",
+        }),
+      });
+
+      const data = await res.json();
+      console.log("Backend response:", data);
+
+      if (!data.status) {
+        setStatusMsg("Payment failed. Try again.");
+        setLoading(false);
+        return;
+      }
+
+      // IMPORTANT: STK sent ≠ payment completed
+      setStatusMsg("STK sent. Complete payment on your phone...");
+
+      // give user time to pay
+      setTimeout(() => {
+        window.location.href =
+          "https://t.me/+VymhjaoQ3kU2ZmI0";
+      }, 6000);
+
+    } catch (err) {
+      console.error(err);
+      setStatusMsg("Network error. Try again.");
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen text-white bg-gradient-to-br from-purple-800 via-blue-700 to-indigo-900 p-6 flex flex-col justify-center items-center">
+
+      <div className="max-w-xl w-full text-center space-y-6">
+
+        <h1 className="text-3xl font-bold">
+          Zambia Zeeds Loan Method (For Kenyans 🇰🇪)
+        </h1>
+
+        <p className="text-sm opacity-80">
+          Learn how Kenyans are accessing Zambia-based loan apps using alternative methods.
+          Full step-by-step guide available inside Telegram.Quick Tips.
+        </p>
+
+        <div className="bg-white/10 backdrop-blur-xl p-6 rounded-2xl border border-white/20 text-left space-y-4">
+          <h2 className="font-bold text-lg">📘 What You’ll Get</h2>
+
+          <ul className="text-sm space-y-2 opacity-90">
+            <li>• Full application process explained</li>
+            <li>• Airtel line setup strategy or MTN</li>
+            <li>• VPN / proxy setup (beginner friendly)</li>
+            <li>• Approval tips to reduce rejection</li>
+            <li>• Updated working methods (2026)</li>
+          </ul>
         </div>
-    </body>
-    </html>
-  `);
-});
 
-app.listen(PORT, () => {
-  console.log(`🚀 Server running at http://localhost:${PORT}`);
-});
+        <div className="bg-white/10 backdrop-blur-xl p-6 rounded-2xl border border-white/20 text-left space-y-4">
+          <h2 className="font-bold text-lg">📋 Requirements</h2>
+
+          <ul className="text-sm space-y-2 opacity-90">
+            <li>• Smartphone </li>
+            <li>• Airtel SIM line</li>
+            <li>• Internet connection/Bundles</li>
+            <li>• VPN / Proxy app,provided Inside</li>
+            <li>• Basic personal details</li>
+          </ul>
+        </div>
+
+        <div className="bg-white/10 p-5 rounded-2xl text-sm border border-white/20">
+          ⚠️ This guide is for educational purposes.
+        </div>
+
+        <div className="bg-gradient-to-r from-pink-500 to-purple-600 p-6 rounded-2xl shadow-xl space-y-3">
+
+          <p className="font-bold text-lg">🚀 Get Full Access Now</p>
+
+          <p className="text-sm">
+            One-time access fee: <b>KSh 299</b>
+          </p>
+
+          <button
+            onClick={handleRedirect}
+            className="w-full bg-white text-black py-3 rounded-xl font-bold"
+          >
+            🔓 Join Telegram Channel for tricks
+          </button>
+
+          <p className="text-xs opacity-80 text-center">
+            Secure M-PESA payment
+          </p>
+        </div>
+
+      </div>
+
+      {/* 🔥 SMALL CLEAN POPUP */}
+      {showPopup && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+
+          <div className="bg-white text-black w-full max-w-[280px] p-4 rounded-2xl shadow-2xl space-y-3">
+
+            <div className="text-center">
+              <h2 className="text-md font-bold">Unlock Access</h2>
+              <p className="text-xs text-gray-500">
+                Pay KSh 299 via M-PESA to continue
+              </p>
+            </div>
+
+            <input
+              type="text"
+              placeholder="07 / 01 / 254..."
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              className="w-full p-2 rounded-lg border text-sm outline-none"
+            />
+
+            <button
+              onClick={handlePayment}
+              disabled={loading}
+              className="w-full bg-black text-white py-2 rounded-lg text-sm font-semibold"
+            >
+              {loading ? "Please wait..." : "Pay Now"}
+            </button>
+
+            {statusMsg && (
+              <p className="text-xs text-center text-gray-600">
+                {statusMsg}
+              </p>
+            )}
+
+            <button
+              onClick={() => setShowPopup(false)}
+              className="text-xs text-gray-400 w-full"
+            >
+              Cancel
+            </button>
+
+          </div>
+
+        </div>
+      )}
+
+      <div className="mt-10 text-xs opacity-60 text-center">
+        © {new Date().getFullYear()} Zambia Zeeds Guide
+      </div>
+
+    </div>
+  );
+}
